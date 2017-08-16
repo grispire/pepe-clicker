@@ -1,0 +1,61 @@
+
+body {
+  font-family: Arial;
+}
+h1 {
+  text-align: center;
+}
+.main-wrapper {
+  margin: 0 auto;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 50%;
+}
+
+.button {
+  background-color: red;
+  max-width: 160px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  margin: 0 auto;
+}
+
+.newgame {
+  background-color: rgba(170, 5, 5, 1);
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+.game {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 500px;
+  margin: 0 auto;
+}
+.pepe {
+  width: 100px;
+  height: 100px;
+  border: 2px solid grey;
+  margin: 12px;
+}
+
+.pepe-active {
+  border: 2px rgba(242, 201, 76, 1);
+  box-shadow: 0px 0px 10px 3px rgba(242, 201, 76, 1);
+  background: url("../img/pepe-standard.png");
+  -webkit-background-size: contain;
+  background-size: contain;
+}
+
+.stats p {
+  text-align: center;
+}
