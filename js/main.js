@@ -1,54 +1,83 @@
 "use strict"
 document.addEventListener("DOMContentLoaded", function() {
-  var score = 0,
-    timeLeft = 120,
-    cellsCollection = document.querySelectorAll(".pepe"),
-    scoreDOM = document.getElementById("score"),
-    timeleftDOM = document.getElementById('timeleft'),
-    playing = true;
-  scoreDOM.textContent += score;
-  timeleftDOM.textContent += timeLeft;
+  var game = {
+    score: 0,
+    timeLeft: 120,
+    playing: true
+  };
+  var DOM = {
+    score: document.getElementById("score"),
+    timeLeft: document.getElementById('timeleft'),
+    poputText: document.getElementById('popup-text'),
+    cellsCollection: document.querySelectorAll(".pepe"),
+    popups: document.querySelectorAll(".popups")
+  }
+  var timeLeft = 120;
+
+  //начало игры
   showPepe();
 
   var timer = setInterval(function() {
-    timeLeft -= 1;
-    if (timeLeft == 0) {
+    game.timeLeft -= 1;
+    if (game.timeLeft == 0) {
       //закончить игру
-      playing = false;
+      game.playing = false;
       clearInterval(timer);
-      cellsCollection.forEach(function(cell) {
+      DOM.cellsCollection.forEach(function(cell) {
         cell.style.backgroundColor = "grey";
       })
       showPepe();
     }
-    timeleftDOM.textContent = "Time left: " + timeLeft;
+    DOM.timeLeft.textContent = "Time left: " + game.timeLeft;
   }, 1000);
 
   function addScore() {
     showPepe();
-    score += 10;
-    scoreDOM.textContent = "Score: " + score;
+    game.score += 10;
+    DOM.score.textContent = "Score: " + game.score;
+    popupMessage("+10");
   }
   //отображает нового Пепе в сетке
   function showPepe() {
     //получаем отображаемого Пепе
-    var elem = document.getElementsByClassName("pepe-active");
+    var pepeActive = document.getElementsByClassName("pepe-active");
     //если игра закончилась
-    if (!playing) {
-      elem[0].removeEventListener("click", addScore);
-      elem[0].classList.remove("pepe-active");
+    if (!game.playing) {
+      pepeActive[0].removeEventListener("click", addScore);
+      pepeActive[0].classList.remove("pepe-active");
       return
     }
     //если он есть, то удаляем его и очищаем листенер
-    if (elem[0]) {
-      elem[0].removeEventListener("click", addScore);
-      elem[0].classList.remove("pepe-active");
+    if (pepeActive[0]) {
+      pepeActive[0].removeEventListener("click", addScore);
+      pepeActive[0].classList.remove("pepe-active");
     }
     //рандомное число, отвечающее за положение Пепе
-    var rnd = Math.floor(Math.random() * (cellsCollection.length));
+    var rnd = Math.floor(Math.random() * (DOM.cellsCollection.length));
     //присвоение класса с Пепе элементу
-    cellsCollection[rnd].className += " pepe-active";
+    DOM.cellsCollection[rnd].className += " pepe-active";
     //листенер на клик для начисления очков
-    cellsCollection[rnd].addEventListener("click", addScore);
+    DOM.cellsCollection[rnd].addEventListener("click", addScore);
+  }
+
+  //создает и удаляет элемент <p> class="popup-text" с текстом message
+  function popupMessage(message) {
+    //создание элемента
+    var popup = document.createElement('p');
+    //присвоение класса
+    popup.className = 'popup-text';
+    //присвоение текста
+    popup.textContent = message;
+    //позиционирование элемента около курсора мыши
+    popup.style.top = event.clientY + -30 +"px";
+    popup.style.left = event.clientX + 30 + "px";
+    //добавление элемента
+    popups.appendChild(popup);
+    //функция удаления элемента
+    var timeout = window.setTimeout(elemRemove, 200, popup);
+  }
+  //удаляет переданный HTML-элемент
+  function elemRemove(elem) {
+    elem.remove()
   }
 })
