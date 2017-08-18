@@ -2,7 +2,6 @@
 document.addEventListener("DOMContentLoaded", function() {
   var game = {
     score: 0,
-    time: 2,
     timeLeft: 0,
     playing: false
   };
