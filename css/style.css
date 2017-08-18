@@ -119,8 +119,7 @@ h1 {
 .popup-text {
   font-size: 1.5em;
   font-weight: bold;
-  color: rgba(242, 201, 76, 1);
-  text-shadow: 0px 0px 1px rgba(242, 201, 76, 0.5);
+  color: rgb(66, 244, 69);
   display: block;
   opacity: 1;
   position: absolute;
