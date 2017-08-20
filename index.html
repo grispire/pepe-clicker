@@ -1,41 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="css/style.css">
-  <title>v0.0.2 pepe clicker</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,700&amp;subset=cyrillic" rel="stylesheet">
+  <link rel="shortcut icon" href="img/favicon.ico" type="image/png">
+
+  <title>Pepe clicker v0.1.0</title>
 </head>
+
 <body>
+  <h1><span class="color-pepe">pepe</span> clicker</h1>
+  <a class="button newgame" id="newGame">new game</a>
   <div class="main-wrapper">
-    <h1>pepe clicker</h1>
-    <a class="button newgame" id="newGame">new game</a>
-    <div class="stats">
-      <p class="score" id="score">
-        Score:
-      </p>
-      <p class="time" id="timeleft">
-        Time left:
-      </p>
+    <div class="game-settings" id="game-settings">
+      <div class="settings-block" id="game-time">
+        <h4 class="time-header">Time</h4>
+        <div class="game-time__wrapper">
+          <label for="game-time__input">30</label>
+          <input type="range" min="30" max="180" step="30" value="60" class="game-time__input" id="game-time__input">
+          <label for="game-time__input">180</label>
+        </div>
+      </div>
+      <div class="settings-block" id="game-mode">
+        <h4>Mode</h4>
+        <form action="">
+          <p><input type="radio" name="game-mode__input" id="game-mode__classic" value="classic" checked><label for="game-mode__classic"></label>Classic</p>
+          <p><input type="radio" name="game-mode__input" id="game-mode__test1" value="" disabled><label for="game-mode__test1"></label>in/dev</p>
+          <p><input type="radio" name="game-mode__input" id="game-mode__test2" value="" disabled><label for="game-mode__test2"></label>in/dev</p>
+        </form>
+      </div>
+      <div class="settings-block " id="game-settings">
+        <h4>Field Size</h4>
+        <form action="">
+          <p><input type="radio" name="game-field__input" id="game-field__small" value="small" checked><label for="game-field__small"></label>Small</p>
+          <p><input type="radio" name="game-field__input" id="game-field__medium" value="medium"><label for="game-field__medium"></label>Medium</p>
+          <p><input type="radio" name="game-field__input" id="game-field__large" value="large"><label for="game-field__large"></label>Large</p>
+        </form>
+      </div>
     </div>
-    <div class="game">
-      <div class="pepe"></div>
-      <div class="pepe"></div>
-      <div class="pepe"></div>
-      <div class="pepe"></div>
-      <div class="pepe"></div>
-      <div class="pepe"></div>
-      <div class="pepe"></div>
-      <div class="pepe"></div>
-      <div class="pepe"></div>
+    <div class="game-field field-large" id="game-field">
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block game-block__active pepe-standard"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+      <div class="game-block"></div>
+    </div>
+    <div class="game-stats" id="game-stats">
+      <div class="stats-block" id="game-timeLeft">
+        <h4>Time left:    </h4>
+      </div>
+      <div class="stats-block" id="game-score">
+        <h4>Score:    </h4>
+      </div>
+      <div class="stats-block" id="game-highscore">
+        <h4>Highscore:    </h4>
+      </div>
     </div>
   </div>
-  <section class="popups" id="popups">
-    <!-- <p class="popup-text" id="popup-text">+10</p> -->
-  </section>
+
 
   <script src="http://localhost:35729/livereload.js"></script>
-  <script src="js/main.js" charset="utf-8"></script>
+  <script src="js/new.js"></script>
 </body>
+
 </html>

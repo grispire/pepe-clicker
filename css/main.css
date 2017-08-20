@@ -1,0 +1,319 @@
+/*  RESET CSS
+  http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+
+/* HTML5 display-role reset for older browsers */
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+
+/* END OF RESET */
+
+.color-pepe {
+  color: rgba(103, 146, 85, 1)
+}
+body {
+  overflow-y: scroll;
+  font-family: "Open Sans";
+  font-weight: 300;
+  font-size: 16px;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 3em;
+  text-align: center;
+  margin-top: 20px;
+  text-transform: uppercase;
+}
+
+.button {
+  background-color: red;
+  max-width: 160px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  margin: 30px auto;
+}
+
+.newgame {
+  background-color: rgba(170, 5, 5, 1);
+  color: white;
+  padding: 10px 15px;
+  display: block;
+  cursor: pointer;
+  width: 10%;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+
+}
+
+.main-wrapper {
+  width: 100%;
+  min-width: 1300px;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  justify-content: space-between;
+  -ms-align-items: flex-start;
+  align-items: flex-start;
+}
+
+.main-wrapper>div {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+
+}
+
+.game-settings,
+.game-stats {
+  width: 20%;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+}
+
+.game-field {
+  max-width: 430px;
+  min-width: 265px;
+  justify-content: center;
+  flex-wrap: wrap;
+  -ms-align-items: center;
+  align-items: center;
+}
+
+.field-small {
+  width: 265px;
+}
+
+.field-medium {
+  width: 345px;
+}
+
+.field-large {
+  width: 430px;
+}
+
+.game-block {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  height: 75px;
+  width: 75px;
+  margin: 5px;
+  border: 1px solid grey;
+}
+
+.game-block__active {
+  border: 2px rgba(242, 201, 76, 1);
+  box-shadow: 0px 0px 10px 3px rgba(242, 201, 76, 1);
+}
+
+.pepe-standard {
+  background: url("../img/pepe-standard.png");
+  -webkit-background-size: contain;
+  background-size: contain;
+}
+
+.game-time__wrapper {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  -ms-align-items: center;
+  align-items: center;
+}
+
+.settings-block h4 {
+  font-weight: 400;
+}
+.settings-block h4:not(.time-header) {
+  margin-top: 30px;
+}
+
+.settings-block form {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.settings-block form p {
+  margin-top: 10px;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  -ms-align-items: center;
+  align-items: center;
+}
+/*input[type="number"] customization*/
+.game-time__input {
+  -webkit-appearance: none;
+  margin: 18px 0;
+  width: 100%;
+}
+.game-time__input:focus {
+  outline: none;
+}
+.game-time__input::-webkit-slider-runnable-track {
+  margin: 0 auto;
+  max-width: 80%;
+  height: 10px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: rgba(95, 140, 76, 1);
+  border-radius: 5px;
+  border: 0.2px solid #010101;
+}
+.game-time__input::-webkit-slider-thumb {
+  height: 40px;
+  width: 40px;
+  background-image: url("../img/pepe-standard.png");
+  -webkit-background-size: cover;
+  background-size: cover;
+  background-color:rgba(0,0,0,0);
+  border-radius: 3px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -16px;
+}
+.game-time__input:focus::-webkit-slider-runnable-track {
+}
+.game-time__input::-moz-range-track {
+  width: 80%;
+  height: 10px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: rgba(95, 140, 76, 1);
+  border-radius: 5px;
+  border: 0.2px solid #010101;
+}
+.game-time__input::-moz-range-thumb {
+  height: 40px;
+  width: 40px;
+  background-image: url("../img/pepe-standard.png");
+  -webkit-background-size: cover;
+  background-size: cover;
+  background-color:rgba(0,0,0,0);
+  cursor: pointer;
+  -moz-appearance: none;
+  margin-top: -14px;
+  border: none;
+}
+.game-time__input::-ms-track {
+  margin: 0 auto;
+  width: 90%;
+  height: 10px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  border-width: 16px 0;
+  color: transparent;
+}
+.game-time__input::-ms-fill-lower {
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: rgba(95, 140, 76, 1);
+  border-radius: 5px;
+  border: 0.2px solid #010101;
+}
+.game-time__input::-ms-fill-upper {
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: rgba(95, 140, 76, 1);
+  border-radius: 5px;
+  border: 0.2px solid #010101;
+}
+.game-time__input::-ms-thumb {
+  height: 40px;
+  width: 40px;
+  background-image: url("../img/pepe-standard.png");
+  -webkit-background-size: cover;
+  background-size: cover;
+  background-color:rgba(0,0,0,0);
+  border-radius: 3px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px;
+  border: none;
+}
+/*end of input[type="number"] customization*/
+
+/*input[type="radio"] customization*/
+.settings-block form input[type="radio"] {
+  display: none;
+}
+
+.settings-block form input[type="radio"]+label {
+  margin-right: 5px;
+  display: block;
+  width: 25px;
+  height: 25px;
+  border: 1px solid grey;
+  border-radius: 50%;
+}
+
+.settings-block form input[type="radio"]:checked+label {
+  border: none;
+  display: block;
+  width: 25px;
+  height: 25px;
+  background: url("../img/pepe-standard.png");
+  -webkit-background-size: contain;
+  background-size: contain;
+}
+.settings-block form input[type="radio"]:disabled+label {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+/*end of input[type="radio"] customization*/
+
+.game-stats h4 {
+  font-weight: 400;
+  margin-bottom: 30px;
+}
