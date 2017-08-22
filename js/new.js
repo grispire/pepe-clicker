@@ -1,4 +1,5 @@
 ﻿"use strict"
+
 //переменная настроек
 var
 	settings = new Settings(),
@@ -10,6 +11,7 @@ var
 		prevPepe: -1,
 	},
 	btnPlay = document.querySelector("#play");
+
 //конструктор объекта настроек
 function Settings() {
 	//получение времени из input[type="range"]
@@ -37,7 +39,7 @@ function Settings() {
 	this.getFieldSize = function() {
 		return +fieldSize;
 	}
-};
+}
 
 //конструктор объекта статистики
 function Stats() {
@@ -84,16 +86,17 @@ function Stats() {
 	this.showHighscore = function() {
 		domHighscore.textContent = "Highscore: " + highscore;
 	}
-};
+}
+
 //отображение актуальной статистики
 function showStats() {
 	stats.showTimeLeft();
 	stats.showScore();
 	stats.showHighscore();
-};
+}
 
 //ПЕРВИЧНЫЙ ВЫВОД ПОЛЯ И СТАТИСТИКИ
-drawField()
+drawField();
 showStats();
 
 //функция создания поля
@@ -126,7 +129,7 @@ function drawField() {
 	for (var i = 0; i < settings.getFieldSize(); i++) {
 		gameField.appendChild(newCell.cloneNode());
 	}
-};
+}
 
 //вывод клетки с Пепе
 function showPepe() {
@@ -147,18 +150,27 @@ function showPepe() {
 	ingameInfo.prevPepe = rnd;
 	//случайная клетка становится активной
 	cellsCollection[rnd].classList.add('game-block__active', 'pepe-standard');
-	//на нее вешается листенер на клик
-	cellsCollection[rnd].addEventListener('click', clickOnPepe);
-};
-//обработка клика по активной клетке
-function clickOnPepe() {
-	//клетка перестает быть активной
-	this.classList.remove('game-block__active', 'pepe-standard');
-	//удаляется листенер клика
-	this.removeEventListener('click', clickOnPepe);
-	//добавляется 10 очков
-	stats.addScore(10);
-	showPepe();
+}
+
+//Всего один обработчик на #game-field
+var gameField = document.querySelector("#game-field");
+
+gameField.addEventListener('click', function(e) {
+	var gameBlock = e.target.closest('.game-block');
+
+	if (gameBlock !== null) {
+		onGameBlockClick(gameBlock);
+	}
+});
+
+function onGameBlockClick(gameBlock) {
+	if (gameBlock.classList.contains('game-block__active')) {
+		//клетка перестает быть активной
+		gameBlock.classList.remove('game-block__active', 'pepe-standard');
+		//добавляется 10 очков
+		stats.addScore(10);
+		showPepe();
+	}
 }
 
 function play() {
@@ -173,4 +185,5 @@ function play() {
 		ingameInfo.playing = true;
 	}
 }
+
 btnPlay.addEventListener('click', play);
