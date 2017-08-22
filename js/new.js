@@ -21,19 +21,19 @@ document.addEventListener("DOMContentLoaded", function() {
       //получение размера поля из input[type="radio"]
       fieldSize = document.querySelector('input[name="game-field__input"]:checked').value;
     this.setGameTime = function(timeNumber) {
-      gameTime = +timeNumber;
+      +document.querySelector('#game-time__input').value;
     }
     this.getGameTime = function() {
       return gameTime;
     }
     this.setGameMode = function(modeString) {
-      gameMode = modeString;
+      +document.querySelector('input[name="game-mode__input"]:checked').value;
     }
     this.getGameMode = function() {
       return gameMode;
     }
     this.setFieldSize = function(sizeString) {
-      fieldSize = +sizeString;
+      +document.querySelector('input[name="game-field__input"]:checked').value;
     }
     this.getFieldSize = function() {
       return +fieldSize;
@@ -97,20 +97,6 @@ document.addEventListener("DOMContentLoaded", function() {
   drawField()
   showStats();
 
-  //слежка за изменением настроек в блоке настроек
-  document.querySelector("#game-settings").addEventListener("change", setSettings);
-  //функция, изменяющая объект settings, отвечающий за настройки
-  //сам игровой процесс изменится после запуска новой игры
-  function setSettings(e) {
-    //получено изменение размера поля, будет изменен размера поля
-    if (e.target.name === 'game-field__input') settings.setFieldSize(e.target.value);
-    //получено изменение режима игры, будет изменен режим игры
-    if (e.target.name === 'game-mode__input') settings.setGameMode(e.target.value);
-    //получено изменение времени, будет изменено время
-    if (e.target.name === 'game-time__input') settings.setGameTime(e.target.value);
-    console.log('Настройки изменены. Игровое время: ' + settings.getGameTime() + '; Игровой режим: ' + settings.getGameMode() + '; Размер поля: ' + settings.getFieldSize());
-  };
-
   //функция создания поля
   function drawField() {
     var
@@ -146,15 +132,17 @@ document.addEventListener("DOMContentLoaded", function() {
   //вывод клетки с Пепе
   function showPepe() {
     var
+      //размер поля
+      fieldSize = settings.getFieldSize(),
       //все клетки игрового поля
       cellsCollection = document.querySelectorAll('.game-block'),
       //случайное число в диапазоне количества клеток, отвечающее за положение нового Пепе
-      rnd = Math.floor(Math.random() * (settings.getFieldSize()));
+      rnd = Math.floor(Math.random() * (fieldSize));
 
     //если новый Пепе должен заспавниться на месте предыдущего
     while (rnd === ingameInfo.prevPepe) {
       //то задается новое случайное число по тем же правилам
-      rnd = Math.floor(Math.random() * (settings.getFieldSize()));
+      rnd = Math.floor(Math.random() * (fieldSize));
     }
     //переменная запоминает местоположение текущего Пепе
     ingameInfo.prevPepe = rnd;
