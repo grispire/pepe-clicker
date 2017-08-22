@@ -9,12 +9,12 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,700&amp;subset=cyrillic" rel="stylesheet">
   <link rel="shortcut icon" href="img/favicon.ico" type="image/png">
 
-  <title>Pepe clicker v0.1.0</title>
+  <title>Pepe clicker v0.1.1</title>
 </head>
 
 <body>
   <h1><span class="color-pepe">pepe</span> clicker</h1>
-  <a class="button newgame" id="newGame">new game</a>
+  <a class="button newgame" id="play">play</a>
   <div class="main-wrapper">
     <div class="game-settings" id="game-settings">
       <div class="settings-block" id="game-time">
@@ -33,41 +33,16 @@
           <p><input type="radio" name="game-mode__input" id="game-mode__test2" value="" disabled><label for="game-mode__test2"></label>in/dev</p>
         </form>
       </div>
-      <div class="settings-block " id="game-settings">
+      <div class="settings-block " id="game-fieldSize">
         <h4>Field Size</h4>
         <form action="">
-          <p><input type="radio" name="game-field__input" id="game-field__small" value="small" checked><label for="game-field__small"></label>Small</p>
-          <p><input type="radio" name="game-field__input" id="game-field__medium" value="medium"><label for="game-field__medium"></label>Medium</p>
-          <p><input type="radio" name="game-field__input" id="game-field__large" value="large"><label for="game-field__large"></label>Large</p>
+          <p><input type="radio" name="game-field__input" id="game-field__small" value="9" checked><label for="game-field__small"></label>Small</p>
+          <p><input type="radio" name="game-field__input" id="game-field__medium" value="16"><label for="game-field__medium"></label>Medium</p>
+          <p><input type="radio" name="game-field__input" id="game-field__large" value="25"><label for="game-field__large"></label>Large</p>
         </form>
       </div>
     </div>
     <div class="game-field field-large" id="game-field">
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block game-block__active pepe-standard"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
-      <div class="game-block"></div>
     </div>
     <div class="game-stats" id="game-stats">
       <div class="stats-block" id="game-timeLeft">

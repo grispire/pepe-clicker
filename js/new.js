@@ -1,5 +1,16 @@
-"use strict"
+﻿"use strict"
 document.addEventListener("DOMContentLoaded", function() {
+  //переменная настроек
+  var
+    settings = new Settings(),
+    //переменная статистики
+    stats = new Stats(),
+    //переменная, хранящая информацию о текущей игре
+    ingameInfo = {
+      playing: false,
+      prevPepe: -1,
+    },
+    btnPlay = document.querySelector("#play");
   //конструктор объекта настроек
   function Settings() {
     //получение времени из input[type="range"]
@@ -22,10 +33,10 @@ document.addEventListener("DOMContentLoaded", function() {
       return gameMode;
     }
     this.setFieldSize = function(sizeString) {
-      fieldSize = sizeString;
+      fieldSize = +sizeString;
     }
     this.getFieldSize = function() {
-      return fieldSize;
+      return +fieldSize;
     }
   };
 
@@ -49,8 +60,12 @@ document.addEventListener("DOMContentLoaded", function() {
       domTimeLeft.textContent = "Time left: " + timeLeft;
     }
     this.setScore = function(scoreNumber) {
-      score = +scoreNumber;
+      score = scoreNumber;
       domScore.textContent = "Score: " + scoreNumber;
+    }
+    this.addScore = function(scoreToAdd) {
+      score += scoreToAdd;
+      domScore.textContent = "Score: " + score;
     }
     this.getScore = function() {
       return score;
@@ -71,30 +86,105 @@ document.addEventListener("DOMContentLoaded", function() {
       domHighscore.textContent = "Highscore: " + highscore;
     }
   };
-  //переменная настроек
-  var settings = new Settings();
-  //переменная статистики
-  var stats = new Stats();
-
+  //отображение актуальной статистики
   function showStats() {
     stats.showTimeLeft();
     stats.showScore();
     stats.showHighscore();
-  }
+  };
+
+  //ПЕРВИЧНЫЙ ВЫВОД ПОЛЯ И СТАТИСТИКИ
+  drawField()
   showStats();
 
   //слежка за изменением настроек в блоке настроек
   document.querySelector("#game-settings").addEventListener("change", setSettings);
   //функция, изменяющая объект settings, отвечающий за настройки
   //сам игровой процесс изменится после запуска новой игры
-  function setSettings(event) {
+  function setSettings(e) {
     //получено изменение размера поля, будет изменен размера поля
-    if (event.target.name == 'game-field__input') settings.setFieldSize(event.target.value);
+    if (e.target.name === 'game-field__input') settings.setFieldSize(e.target.value);
     //получено изменение режима игры, будет изменен режим игры
-    if (event.target.name == 'game-mode__input') settings.setGameMode(event.target.value);
+    if (e.target.name === 'game-mode__input') settings.setGameMode(e.target.value);
     //получено изменение времени, будет изменено время
-    if (event.target.name == 'game-time__input') settings.setGameTime(event.target.value);
+    if (e.target.name === 'game-time__input') settings.setGameTime(e.target.value);
     console.log('Настройки изменены. Игровое время: ' + settings.getGameTime() + '; Игровой режим: ' + settings.getGameMode() + '; Размер поля: ' + settings.getFieldSize());
   };
 
+  //функция создания поля
+  function drawField() {
+    var
+      //само игровое поле
+      gameField = document.querySelector("#game-field"),
+      //новая ячейка
+      newCell = document.createElement('div');
+    //присвоение ей класса
+    newCell.className = 'game-block';
+    //в зависимости от размера поля ему присваевается класс
+    gameField.classList.remove('field-small', 'field-medium', 'field-large');
+    switch (settings.getFieldSize()) {
+      case 9:
+        gameField.classList.add('field-small');
+        break;
+      case 16:
+        gameField.classList.add('field-medium');
+        break;
+      case 25:
+        gameField.classList.add('field-large');
+        break;
+      default:
+        console.log('Ошибка построения поля. Количество ячеек - ' + settings.getFieldSize())
+    }
+    //полная очистка игрового поля
+    gameField.innerHTML = '';
+    //отрисовка поля
+    for (var i = 0; i < settings.getFieldSize(); i++) {
+      gameField.appendChild(newCell.cloneNode());
+    }
+  };
+
+  //вывод клетки с Пепе
+  function showPepe() {
+    var
+      //все клетки игрового поля
+      cellsCollection = document.querySelectorAll('.game-block'),
+      //случайное число в диапазоне количества клеток, отвечающее за положение нового Пепе
+      rnd = Math.floor(Math.random() * (settings.getFieldSize()));
+
+    //если новый Пепе должен заспавниться на месте предыдущего
+    while (rnd === ingameInfo.prevPepe) {
+      //то задается новое случайное число по тем же правилам
+      rnd = Math.floor(Math.random() * (settings.getFieldSize()));
+    }
+    //переменная запоминает местоположение текущего Пепе
+    ingameInfo.prevPepe = rnd;
+    //случайная клетка становится активной
+    cellsCollection[rnd].classList.add('game-block__active', 'pepe-standard');
+    //на нее вешается листенер на клик
+    cellsCollection[rnd].addEventListener('click', clickOnPepe);
+  };
+  //обработка клика по активной клетке
+  function clickOnPepe() {
+    //клетка перестает быть активной
+    this.classList.remove('game-block__active', 'pepe-standard');
+    //удаляется листенер клика
+    this.removeEventListener('click', clickOnPepe);
+    //добавляется 10 очков
+    stats.addScore(10);
+    showPepe();
+  }
+
+function play() {
+  //если игра не идет в данный момент
+  if (!ingameInfo.playing) {
+    //показать статистику
+    showStats();
+    //нарисовать игровое поле
+    drawField();
+    //добавить первую активную клетку
+    showPepe();
+    ingameInfo.playing = true;
+  }
+}
+btnPlay.addEventListener('click', play);
 });
