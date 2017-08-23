@@ -7,6 +7,11 @@
     settings = new Settings(),
     //статистика
     stats = new Stats(),
+    //игровые звуки
+    sounds = {
+      tick: document.querySelector('#sound-tick'),
+      timeEnd: document.querySelector("#sound-timeout"),
+    },
     //переменная, хранящая информацию о текущей игре
     ingameInfo = {
       playing: false,
@@ -200,7 +205,7 @@
     //если игра не идет в данный момент
     if (!ingameInfo.playing) {
       setSettings();
-      stats.setTimeLeft(settings.getGameTime());
+      stats.setTimeLeft(12);
       stats.setScore(0);
       //показать статистику
       showStats();
@@ -214,9 +219,13 @@
       var timer = stats.getTimeLeft();
       timer--;
       stats.setTimeLeft(timer);
+      if (timer < 11 && timer > 1) {
+        sounds.tick.play();
+      }
       if (timer === 0 || timer < 0) {
         clearInterval(gameSessionTimer);
         gameOver();
+        sounds.timeEnd.play();
       }
     }, 1000)
 
