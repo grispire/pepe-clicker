@@ -205,7 +205,9 @@
     //если игра не идет в данный момент
     if (!ingameInfo.playing) {
       setSettings();
-      stats.setTimeLeft(12);
+      //передает в статистику время на игру
+      stats.setTimeLeft(settings.getTimeLeft());
+      //обнуляет очки
       stats.setScore(0);
       //показать статистику
       showStats();
@@ -215,26 +217,42 @@
       showPepe();
       ingameInfo.playing = true;
     }
+    //игровой таймер
     var gameSessionTimer = setInterval(function() {
+      //переменная получает из статистики оставшееся игровое время, изначально полученное из настроек
       var timer = stats.getTimeLeft();
+      //переменная уменьшается с каждой итерацией интервала
       timer--;
+      //уменьшенное время запоминается
       stats.setTimeLeft(timer);
-      if (timer < 11 && timer > 1) {
+      //если осталось меньше 10 секунд - включается тиаканье часов
+      if (timer < 11 && timer > 0) {
         sounds.tick.play();
       }
+      //если время вышло
       if (timer === 0 || timer < 0) {
+        //очищается таймер
         clearInterval(gameSessionTimer);
+        //заканчивается игра
         gameOver();
+        //в конце игры звучит гудок
         sounds.timeEnd.play();
       }
     }, 1000)
 
+    //функция окончания игры
     function gameOver() {
+      //удаляется листенер с клика
       document.querySelector('.pepe-standard').removeEventListener('mousedown', clickOnPepe);
+      //удаляется активная клетка
       document.querySelector('.pepe-standard').classList.remove('game-block__active', 'pepe-standard');
+      //переменная, отвечающая за состояние игры
       ingameInfo.playing = false;
+      //устанавливается highscore
       stats.setHighscore(stats.getScore());
+      //обновляется вся статистика
       showStats();
     }
   }
+  //запуск игры
   btnPlay.addEventListener('click', play);
