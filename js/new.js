@@ -1,4 +1,5 @@
-﻿"use strict"
+﻿
+"use strict"
 document.addEventListener("DOMContentLoaded", function() {
   //переменная настроек
   var
@@ -21,19 +22,20 @@ document.addEventListener("DOMContentLoaded", function() {
       //получение размера поля из input[type="radio"]
       fieldSize = document.querySelector('input[name="game-field__input"]:checked').value;
     this.setGameTime = function(timeNumber) {
-      +document.querySelector('#game-time__input').value;
+      gameTime = +document.querySelector('#game-time__input').value;
+      stats.setTimeLeft(+document.querySelector('#game-time__input').value);
     }
     this.getGameTime = function() {
       return gameTime;
     }
     this.setGameMode = function(modeString) {
-      +document.querySelector('input[name="game-mode__input"]:checked').value;
+      document.querySelector('input[name="game-mode__input"]:checked').value;
     }
     this.getGameMode = function() {
       return gameMode;
     }
     this.setFieldSize = function(sizeString) {
-      +document.querySelector('input[name="game-field__input"]:checked').value;
+      fieldSize = +document.querySelector('input[name="game-field__input"]:checked').value;
     }
     this.getFieldSize = function() {
       return +fieldSize;
@@ -86,6 +88,12 @@ document.addEventListener("DOMContentLoaded", function() {
       domHighscore.textContent = "Highscore: " + highscore;
     }
   };
+
+  function setSettings() {
+    settings.setFieldSize();
+    settings.setGameTime();
+    settings.setGameMode();
+  }
   //отображение актуальной статистики
   function showStats() {
     stats.showTimeLeft();
@@ -157,22 +165,58 @@ document.addEventListener("DOMContentLoaded", function() {
     this.classList.remove('game-block__active', 'pepe-standard');
     //удаляется листенер клика
     this.removeEventListener('click', clickOnPepe);
-    //добавляется 10 очков
-    stats.addScore(10);
+    //в зависимости от размера поля (которое влияет на сложность) начисляются очки
+    switch (settings.getFieldSize()) {
+      //10 очков на маленьком поле
+      case 9:
+        stats.addScore(10);
+        break;
+      //12 очков на среднем поле
+      case 16:
+        stats.addScore(12);
+        break;
+      //15 очков на большом поле
+      case 25:
+        stats.addScore(15);
+        break;
+      default:
+        console.log('Проверь размер поля')
+        stats.addScore(10);
+    }
     showPepe();
   }
 
-function play() {
-  //если игра не идет в данный момент
-  if (!ingameInfo.playing) {
-    //показать статистику
-    showStats();
-    //нарисовать игровое поле
-    drawField();
-    //добавить первую активную клетку
-    showPepe();
-    ingameInfo.playing = true;
+  function play() {
+    //если игра не идет в данный момент
+    if (!ingameInfo.playing) {
+      setSettings();
+      stats.setTimeLeft(settings.getGameTime());
+      stats.setScore(0);
+      //показать статистику
+      showStats();
+      //нарисовать игровое поле
+      drawField();
+      //добавить первую активную клетку
+      showPepe();
+      ingameInfo.playing = true;
+    }
+    var gameSessionTimer = setInterval(function() {
+      var timer = stats.getTimeLeft();
+      timer--;
+      stats.setTimeLeft(timer);
+      if (timer === 0 || timer < 0) {
+        clearInterval(gameSessionTimer);
+        gameOver();
+      }
+    }, 1000)
+
+    function gameOver() {
+      document.querySelector('.pepe-standard').removeEventListener('click', clickOnPepe);
+      document.querySelector('.pepe-standard').classList.remove('game-block__active', 'pepe-standard');
+      ingameInfo.playing = false;
+      stats.setHighscore(stats.getScore());
+      showStats();
+    }
   }
-}
-btnPlay.addEventListener('click', play);
+  btnPlay.addEventListener('click', play);
 });
