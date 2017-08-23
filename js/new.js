@@ -157,14 +157,14 @@ document.addEventListener("DOMContentLoaded", function() {
     //случайная клетка становится активной
     cellsCollection[rnd].classList.add('game-block__active', 'pepe-standard');
     //на нее вешается листенер на клик
-    cellsCollection[rnd].addEventListener('click', clickOnPepe);
+    cellsCollection[rnd].addEventListener('mousedown', clickOnPepe);
   };
   //обработка клика по активной клетке
   function clickOnPepe() {
     //клетка перестает быть активной
     this.classList.remove('game-block__active', 'pepe-standard');
     //удаляется листенер клика
-    this.removeEventListener('click', clickOnPepe);
+    this.removeEventListener('mousedown', clickOnPepe);
     //в зависимости от размера поля (которое влияет на сложность) начисляются очки
     switch (settings.getFieldSize()) {
       //10 очков на маленьком поле
@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }, 1000)
 
     function gameOver() {
-      document.querySelector('.pepe-standard').removeEventListener('click', clickOnPepe);
+      document.querySelector('.pepe-standard').removeEventListener('mousedown', clickOnPepe);
       document.querySelector('.pepe-standard').classList.remove('game-block__active', 'pepe-standard');
       ingameInfo.playing = false;
       stats.setHighscore(stats.getScore());
