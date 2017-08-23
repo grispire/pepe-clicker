@@ -206,7 +206,7 @@
     if (!ingameInfo.playing) {
       setSettings();
       //передает в статистику время на игру
-      stats.setTimeLeft(settings.getTimeLeft());
+      stats.setTimeLeft(settings.getGameTime());
       //обнуляет очки
       stats.setScore(0);
       //показать статистику
