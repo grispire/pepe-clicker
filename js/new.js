@@ -1,10 +1,11 @@
-﻿
-"use strict"
-document.addEventListener("DOMContentLoaded", function() {
+﻿"use strict"
   //переменная настроек
   var
+    //игровое поле
+    gameField = document.querySelector("#game-field"),
+    //настройки
     settings = new Settings(),
-    //переменная статистики
+    //статистика
     stats = new Stats(),
     //переменная, хранящая информацию о текущей игре
     ingameInfo = {
@@ -156,34 +157,43 @@ document.addEventListener("DOMContentLoaded", function() {
     ingameInfo.prevPepe = rnd;
     //случайная клетка становится активной
     cellsCollection[rnd].classList.add('game-block__active', 'pepe-standard');
-    //на нее вешается листенер на клик
-    cellsCollection[rnd].addEventListener('mousedown', clickOnPepe);
   };
-  //обработка клика по активной клетке
-  function clickOnPepe() {
-    //клетка перестает быть активной
-    this.classList.remove('game-block__active', 'pepe-standard');
-    //удаляется листенер клика
-    this.removeEventListener('mousedown', clickOnPepe);
-    //в зависимости от размера поля (которое влияет на сложность) начисляются очки
-    switch (settings.getFieldSize()) {
-      //10 очков на маленьком поле
-      case 9:
-        stats.addScore(10);
-        break;
-      //12 очков на среднем поле
-      case 16:
-        stats.addScore(12);
-        break;
-      //15 очков на большом поле
-      case 25:
-        stats.addScore(15);
-        break;
-      default:
-        console.log('Проверь размер поля')
-        stats.addScore(10);
+
+  //игровое поле получает листенер на mousedown
+  gameField.addEventListener('mousedown', function(e) {
+    //в переменную записывается кликнутый блок
+    var gameBlock = e.target.closest('.game-block');
+    //если он существует - вызывается обработчик клика по Пепе
+    if (gameBlock !== null) {
+      clickOnPepe(gameBlock);
     }
-    showPepe();
+  })
+  //обработка клика по активной клетке
+  function clickOnPepe(gameBlock) {
+    if (gameBlock.classList.contains('game-block__active')) {
+      //клетка перестает быть активной
+      gameBlock.classList.remove('game-block__active', 'pepe-standard');
+      //в зависимости от размера поля (которое влияет на сложность) начисляются очки
+      switch (settings.getFieldSize()) {
+        //10 очков на маленьком поле
+        case 9:
+          stats.addScore(10);
+          break;
+          //12 очков на среднем поле
+        case 16:
+          stats.addScore(12);
+          break;
+          //15 очков на большом поле
+        case 25:
+          stats.addScore(15);
+          break;
+        default:
+          console.log('Проверь размер поля')
+          stats.addScore(10);
+      }
+      //отображается новый Пепе
+      showPepe();
+    }
   }
 
   function play() {
@@ -219,4 +229,3 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
   btnPlay.addEventListener('click', play);
-});
