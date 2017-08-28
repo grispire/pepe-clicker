@@ -8,20 +8,27 @@
   <link rel="stylesheet" href="css/main.css">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,700&amp;subset=cyrillic" rel="stylesheet">
   <link rel="shortcut icon" href="img/favicon.ico" type="image/png">
-
-  <title>Pepe clicker v0.2.2</title>
+  <title>Pepe clicker v0.3.0</title>
 </head>
 
 <body>
-  <h1><span class="color-pepe">pepe</span> clicker</h1>
-  <a class="button newgame" id="play">play</a>
+  <header>
+    <h1><span class="color-pepe">pepe</span> clicker</h1>
+    <a class="button play button-clickable" id="play">play</a>
+    <div class="button-wrapper__header" id="button-wrapper__header">
+      <a class="button replay" id="replay">replay</a>
+      <a class="button break" id="break">break</a>
+      <div class="float-clear"></div>
+    </div>
+  </header>
   <div class="main-wrapper">
     <div class="game-settings" id="game-settings">
-      <div class="settings-block" id="game-time">
+      <h2>SETTINGS</h2>
+      <div class="settings-block settings-first" id="game-time">
         <h4 class="time-header">Time</h4>
         <div class="game-time__wrapper">
           <label for="game-time__input">30</label>
-          <input type="range" min="30" max="180" step="30" value="60" name="game-time__input" class="game-time__input" id="game-time__input">
+          <input type="range" min="30" max="180" step="30" value="30" name="game-time__input" class="game-time__input" id="game-time__input">
           <label for="game-time__input">180</label>
         </div>
       </div>
@@ -44,16 +51,96 @@
     </div>
     <div class="game-field field-large" id="game-field">
     </div>
-    <div class="game-stats" id="game-stats">
-      <div class="stats-block" id="game-timeLeft">
-        <h4>Time left: 0</h4>
+    <div class="column-wrapper">
+      <div class="game-stats" id="game-stats">
+        <h2>STATS</h2>
+        <ul class="game-stats-list">
+          <li class="game-stats__item" id="game-timeLeft">
+            <h4>Time left: 0</h4>
+          </li>
+          <li class="game-stats__item" id="game-score">
+            <h4>Score: 0</h4>
+          </li>
+          <li class="game-stats__item" id="game-highscore">
+            <h4>Highscore: 0</h4>
+          </li>
+        </ul>
       </div>
-      <div class="stats-block" id="game-score">
-        <h4>Score: 0</h4>
+      <div class="user-info">
+        <h2>INFORMATION</h2>
+        <div class="button-wrapper" id="info-buttons">
+          <a class="button info-button controls" id="controls-info">CONTROLS</a>
+          <a class="button info-button help" id="help-info">HELP</a>
+          <a class="button info-button version" id="version-info">IN-DEV</a>
+          <a class="button info-button contacts" id="contacts-info">IN-DEV</a>
+        </div>
       </div>
-      <div class="stats-block" id="game-highscore">
-        <h4>Highscore: 0</h4>
-      </div>
+    </div>
+
+  </div>
+  <div class="popup-wrapper" id="popup-wrapper">
+    <div class="popup popup-controls" id="popup-controls">
+      <a class="button popup-close">&times;</a>
+      <h3>CONTROLS</h3>
+      <ul class="popup-list">
+        <li class="popup-list__item">
+          <p class="controls-key">Num<br>Lock</p>
+          <p>Use Numpad for click 1-9 Pepe in Classic mode.</p>
+        </li>
+        <li class="popup-list__item">
+          <p class="controls-key">P</p>
+          <p>Break game</p>
+        </li>
+        <li class="popup-list__item">
+          <p class="controls-key">R</p>
+          <p>New game with current settings</p>
+        </li>
+        <li class="popup-list__item">
+          <p class="controls-key">Ctrl</p><span>+</span>
+          <p class="controls-key">X</p>
+          <p>Close pop-up window</p>
+        </li>
+      </ul>
+    </div>
+    <div class="popup popup-help" id="popup-help">
+      <a class="button popup-close">&times;</a>
+      <h3>
+        HELP
+      </h3>
+      <ul class="popup-list">
+        <li class="popup-list__item">
+          <p>Score as many points as possible!</p>
+        </li>
+        <li class="popup-list__item">
+          <p>Classic mode - use your mouse or Numpad for click on Pepe!</p>
+        </li>
+        <li class="popup-list__item">
+          <p class="controls-key">R</p>
+          <p>Play now</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="popup popup-gameover" id="popup-gameover">
+      <a class="button popup-close">&times;</a>
+      <h3>
+        GAME OVER
+      </h3>
+      <ul class="popup-list">
+        <li class="popup-list__item">
+          <p id="gameover-info">Your time is over!</p>
+        </li>
+        <li class="popup-list__item">
+          <p>In this attempt your score is <span id="gameover-score">0</span>.</p>
+        </li>
+        <li class="popup-list__item">
+          <p class="gameover-highscore" id="gameover-highscore"></p>
+        </li>
+        <li class="popup-list__item">
+          <p class="controls-key">R</p>
+          <p>Replay with current settings</p>
+        </li>
+      </ul>
     </div>
   </div>
   <audio src="audio/effect_tick.wav" id="sound-tick"></audio>
