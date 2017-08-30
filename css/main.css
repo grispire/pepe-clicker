@@ -200,6 +200,16 @@ h2 {
   width: 500px;
   height: 500px;
   box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.pepe-runner {
+  width: 25px;
+  height: 25px;
+  background-image: url('../img/pepe-standard.png');
+  -webkit-background-size: contain;
+  background-size: contain;
+  position: absolute;
 }
 
 .game-block {
@@ -404,6 +414,12 @@ h2 {
   width: 25px;
   height: 25px;
   background: url("../img/pepe-standard.png");
+  -webkit-background-size: contain;
+  background-size: contain;
+}
+
+.settings-block form input[value="hard"]:checked+label {
+  background: url("../img/pepe-angry.jpg");
   -webkit-background-size: contain;
   background-size: contain;
 }

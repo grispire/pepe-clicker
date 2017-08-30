@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/main.css">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,700&amp;subset=cyrillic" rel="stylesheet">
   <link rel="shortcut icon" href="img/favicon.ico" type="image/png">
-  <title>Pepe clicker v0.3.0</title>
+  <title>Pepe clicker v0.3.1</title>
 </head>
 
 <body>
@@ -35,17 +35,17 @@
       <div class="settings-block" id="game-mode">
         <h4>Mode</h4>
         <form action="">
-          <p><input type="radio" name="game-mode__input" id="game-mode__classic" value="classic" checked><label for="game-mode__classic"></label>Classic</p>
-          <p><input type="radio" name="game-mode__input" id="game-mode__test1" value="" disabled><label for="game-mode__test1"></label>in/dev</p>
+          <p><input type="radio" name="game-mode__input" id="game-mode__classic" value="classic"><label for="game-mode__classic"></label>Classic</p>
+          <p><input type="radio" name="game-mode__input" id="game-mode__test1" value="runner" checked><label for="game-mode__test1"></label>Runner</p>
           <p><input type="radio" name="game-mode__input" id="game-mode__test2" value="" disabled><label for="game-mode__test2"></label>in/dev</p>
         </form>
       </div>
       <div class="settings-block " id="game-fieldSize">
-        <h4>Field Size</h4>
+        <h4>Difficult</h4>
         <form action="">
-          <p><input type="radio" name="game-field__input" id="game-field__small" value="small" checked><label for="game-field__small"></label>Small</p>
-          <p><input type="radio" name="game-field__input" id="game-field__medium" value="medium"><label for="game-field__medium"></label>Medium</p>
-          <p><input type="radio" name="game-field__input" id="game-field__large" value="large"><label for="game-field__large"></label>Large</p>
+          <p><input type="radio" name="game-difficult__input" id="game-difficult__easy" value="easy" checked><label for="game-difficult__easy"></label>Easy</p>
+          <p><input type="radio" name="game-difficult__input" id="game-difficult__medium" value="medium"><label for="game-difficult__medium"></label>Medium</p>
+          <p><input type="radio" name="game-difficult__input" id="game-difficult__hard" value="hard"><label for="game-difficult__hard"></label>Hard</p>
         </form>
       </div>
     </div>
@@ -121,7 +121,7 @@
       </ul>
     </div>
 
-    <div class="popup popup-gameover" id="popup-gameover">
+    <div class="popup popup-gameover" id="popup-gameover__classic">
       <a class="button popup-close">&times;</a>
       <h3>
         GAME OVER
@@ -135,6 +135,27 @@
         </li>
         <li class="popup-list__item">
           <p class="gameover-highscore" id="gameover-highscore"></p>
+        </li>
+        <li class="popup-list__item">
+          <p class="controls-key">R</p>
+          <p>Replay with current settings</p>
+        </li>
+      </ul>
+    </div>
+    <div class="popup popup-gameover" id="popup-gameover__runner">
+      <a class="button popup-close">&times;</a>
+      <h3>
+        GAME OVER
+      </h3>
+      <ul class="popup-list">
+        <li class="popup-list__item">
+          <p id="gameover-info">You catch Pepe!</p>
+        </li>
+        <li class="popup-list__item">
+          <p>Your time: <span id="gameover-stopwatch">0</span>s.</p>
+        </li>
+        <li class="popup-list__item">
+          <p class="gameover-highscore" id=""></p>
         </li>
         <li class="popup-list__item">
           <p class="controls-key">R</p>

@@ -21,6 +21,8 @@ var
   ingameInfo = {
     playing: false,
     prevPepe: -1,
+    //в runner-mode первый Пепе обязательно убежит
+    cooldown: false
   },
   timers = {},
   btnPlay = document.querySelector("#play");
@@ -30,9 +32,7 @@ function Settings() {
   var
     gameTime = +document.querySelector('#game-time__input').value,
     //получение режима игры из input[type="radio"]
-    gameMode = document.querySelector('input[name="game-mode__input"]:checked').value,
-    //получение размера поля из input[type="radio"]
-    fieldSize = document.querySelector('input[name="game-field__input"]:checked').value;
+    gameMode = document.querySelector('input[name="game-mode__input"]:checked').value;
   this.setGameTime = function(timeNumber) {
     gameTime = +document.querySelector('#game-time__input').value;
     stats.setTimeLeft(+document.querySelector('#game-time__input').value);
@@ -46,35 +46,48 @@ function Settings() {
   this.getGameMode = function() {
     return gameMode;
   }
-  this.setFieldSize = function() {
-    fieldSize = document.querySelector('input[name="game-field__input"]:checked').value;
-  }
   //принимает значение variation, которое отвечает за возвращаемый тип значения
-  this.getFieldSize = function(variation = 'string') {
+  this.getDifficult = function(variation = 'string') {
+    var difficult = document.querySelector('input[name="game-difficult__input"]:checked').value;
     //числа возвращаются в зависимости от размера поля
     if (variation === 'number') {
-      switch (fieldSize) {
-        case 'small':
+      switch (difficult) {
+        case 'easy':
           return 9;
           break;
         case 'medium':
           return 16;
           break;
-        case 'large':
+        case 'hard':
           return 25;
           break;
         default:
-          alert('Problems with Field size');
+          alert('Problems with difficult. Got wrong value: ' + difficult);
+          return
+      }
+    }
+    if (variation == 'time') {
+      switch (difficult) {
+        case 'easy':
+          return 500;
+          break;
+        case 'medium':
+          return 350;
+          break;
+        case 'hard':
+          return 200;
+          break;
+        default:
+          alert('Problems with difficult. Got wrong value: ' + difficult);
           return
       }
     }
     // по умолчанию возвращается строка
-    return fieldSize;
+    return difficult;
   }
   this.setAll = function() {
     this.setGameTime();
     this.setGameMode()
-    this.setFieldSize();
   }
 };
 
@@ -85,7 +98,9 @@ function Stats() {
     score = 0,
     highscore = (localStorage.getItem('highscore')) ? +localStorage.getItem('highscore') : 0,
     docScore = document.querySelector("#game-score h4"),
-    popupScore = document.querySelector("#gameover-score");
+    popupScore = document.querySelector("#gameover-score"),
+    popupStopwatch = document.querySelector("#gameover-stopwatch"),
+    stopwatch = 0;
   this.setTimeLeft = function(timeNumber) {
     timeLeft = +timeNumber;
     this.showTimeLeft();
@@ -124,10 +139,24 @@ function Stats() {
   this.showHighscore = function() {
     document.querySelector("#game-highscore h4").textContent = "Highscore: " + highscore;
   }
-  this.showAll = function() {
+  this.setStopwatch = function (time) {
+    stopwatch = time;
+  }
+  this.getStopwatch = function () {
+    return stopwatch;
+  }
+  this.showStopwatch = function () {
+    document.querySelector("#game-timeLeft h4").textContent = "Time spent: " + stopwatch + 's';
+    popupStopwatch.textContent = stopwatch;
+  }
+  this.showAll = function(mode) {
     this.showTimeLeft();
     this.showScore();
     this.showHighscore();
+    //в runner показывается секундомер вместо оставшегося времени
+    if (mode == 'runner') {
+      this.showStopwatch()
+    }
   }
   //если передана show, то отображается статистика
   this.default = function(show) {
@@ -194,11 +223,12 @@ document.addEventListener('keydown', function(e) {
   }
   //нажатие R начинает новую игру
   if (e.code == 'KeyR') {
+    console.log(ingameInfo);
     if (ingameInfo.playing) gameOver(false);
     play();
   }
   //нажатие P прерывает текущую игру, если она запущена
-  if (e.ctrlKey && e.code == 'KeyX') {
+  if (e.ctrlKey && e.code == 'KeyX' || e.code == "Escape") {
     popups.close();
   }
   if (e.code == 'KeyP' && ingameInfo.playing) {
@@ -225,23 +255,23 @@ function Field() {
     if (mode === 'classic') {
       //присвоение ячейке поля класса
       newCell.className = 'game-block';
-      //в зависимости от размера поля ему присваевается класс
-      switch (settings.getFieldSize('string')) {
-        case 'small':
+      //в зависимости от сложности меняется размер поля
+      switch (settings.getDifficult('string')) {
+        case 'easy':
           gameField.classList.add('field-classic__small');
           break;
         case 'medium':
           gameField.classList.add('field-classic__medium');
           break;
-        case 'large':
+        case 'hard':
           gameField.classList.add('field-classic__large');
           break;
         default:
-          console.log(settings.getFieldSize('number'));
-          console.log('Ошибка построения поля. Количество ячеек - ' + settings.getFieldSize('number'))
+          console.log(settings.getDifficult('number'));
+          console.log('Ошибка построения поля. Количество ячеек - ' + settings.getDifficult('number'))
       }
       //отрисовка поля
-      for (var i = 0; i < settings.getFieldSize('number'); i++) {
+      for (var i = 0; i < settings.getDifficult('number'); i++) {
         gameField.appendChild(newCell.cloneNode());
       }
     }
@@ -265,10 +295,10 @@ function Field() {
 
 //функция отвечает за распределение очков
 function scorer() {
-  //в зависимости от размера поля (которое влияет на сложность) начисляются очки
-  switch (settings.getFieldSize('string')) {
+  //в зависимости от сложности начисляются очки
+  switch (settings.getDifficult('string')) {
     //10 очков на маленьком поле
-    case 'small':
+    case 'easy':
       stats.addScore(10);
       break;
       //12 очков на среднем поле
@@ -276,7 +306,7 @@ function scorer() {
       stats.addScore(12);
       break;
       //15 очков на большом поле
-    case 'large':
+    case 'hard':
       stats.addScore(15);
       break;
     default:
@@ -288,8 +318,8 @@ function scorer() {
 //вывод клетки с Пепе
 function showPepe() {
   var
-    //размер поля
-    fieldSize = settings.getFieldSize('number'),
+    //размер поля определяется сложностью
+    fieldSize = settings.getDifficult('number'),
     //все клетки игрового поля
     cellsCollection = document.querySelectorAll('.game-block'),
     //случайное число в диапазоне количества клеток, отвечающее за положение нового Пепе
@@ -363,6 +393,66 @@ function keydownOnPepe(key) {
   }
 }
 
+function runnerPepeStart() {
+    //секундомер сбрасывается
+  stats.setStopwatch(0);
+  stats.showStopwatch();
+  //интервал для секундомера
+  timers.stopwatch = setInterval(function () {
+    //получает текущее время
+    var currentTime = +stats.getStopwatch();
+    //обрезает хвост
+    currentTime = (currentTime+0.1).toFixed(1);
+    stats.setStopwatch(+currentTime);
+    stats.showStopwatch();
+  }, 100)
+  //кулдаун принудительно сбрасывается
+  ingameInfo.cooldown = false;
+  //игровое поле
+  var
+    gameField = document.querySelector("#game-field"),
+    //блок с Пепе
+    runningPepe = document.createElement('div');
+
+  //ему присваивается нужный класс
+  runningPepe.classList.add('pepe-runner');
+  //блок добавляется на игровое поле
+  gameField.appendChild(runningPepe);
+  //вешается листенер на наведение
+  document.querySelector(".pepe-runner").addEventListener('mouseover', pepeRun);
+}
+
+function pepeRun() {
+  //получает время отката телепорта в зависимости от сложности
+  var cooldownTime = settings.getDifficult('time');
+  //если телепорт Пепе на кулдауне, то он не убежит
+  if (ingameInfo.cooldown) {
+    //и если по нему кликнуть в это время, то игра будет окончена
+    document.querySelector(".pepe-runner").addEventListener('click', pepeCatched);
+  }
+  //если телепорт не на кулдауне
+  if (!ingameInfo.cooldown) {
+    //предыдущий таймер сброса кулдауна очищается
+    clearTimeout(timers.resetCooldown);
+    //устанавливается новый, который ведет отсчет от текущего момента
+    timers.resetCooldown = setTimeout(function() {
+      //по истечению времени он снова сбросит кулдаун
+      ingameInfo.cooldown = false;
+      //и сбросит себя на всякий случай
+      clearTimeout(timers.resetCooldown);
+    }, cooldownTime);
+    //500 - ширина и высота игрового поля, 481 - чтобы картинка с лягушкой не вылезала за пределы поля
+    document.querySelector(".pepe-runner").style.top = Math.random() * 481 + 'px';
+    document.querySelector(".pepe-runner").style.left = Math.random() * 481 + 'px';
+    //вешается кулдаун
+    ingameInfo.cooldown = true;
+  }
+}
+
+function pepeCatched() {
+  document.querySelector(".pepe-runner").removeEventListener('click', pepeCatched);
+  gameOver();
+}
 //сбрасывает все setInterval's в объекте timers, хранящем таймера
 function clearTimers() {
   for (var timer in timers) {
@@ -377,59 +467,83 @@ function play() {
   popups.close();
   //обновляется переменная настроек из инпутов
   settings.setAll();
+  //передает в объект информацию о текущем режиме
+  ingameInfo.currentMode = settings.getGameMode();
   //устанавливает стандартные значения статистики и отображает их
   stats.default('show');
   //нарисовать игровое поле
   field.draw();
-  //добавить первую активную клетку
-  showPepe();
+  //от режима игры зависит, что будет происходить во время игры
+  var gameMode = settings.getGameMode();
+  if (gameMode == 'classic') {
+    //добавить первую активную клетку
+    showPepe();
+    //игровой таймер
+    timers.clasicTimer = setInterval(function() {
+      //переменная получает из статистики оставшееся игровое время, изначально полученное из настроек
+      var timer = stats.getTimeLeft();
+      //переменная уменьшается с каждой итерацией интервала
+      timer--;
+      //уменьшенное время запоминается
+      stats.setTimeLeft(timer);
+      //если осталось меньше 10 секунд - включается тиаканье часов
+      if (timer < 11 && timer > 0) {
+        sounds.tick.play();
+      }
+      //если время вышло
+      if (timer === 0 || timer < 0) {
+        //очищается таймер
+        clearTimers();
+        //заканчивается игра
+        gameOver();
+        //в конце игры звучит гудок
+        sounds.timeEnd.play();
+      }
+    }, 1000)
+  }
+  //запуск runner
+  if (gameMode == 'runner') {
+    runnerPepeStart();
+  }
+  //игра начата
   ingameInfo.playing = true;
+  //изменение объема кнопок
   headerButtonsSwitcher('start');
-  //игровой таймер
-  timers.clasicTimer = setInterval(function() {
-    //переменная получает из статистики оставшееся игровое время, изначально полученное из настроек
-    var timer = stats.getTimeLeft();
-    //переменная уменьшается с каждой итерацией интервала
-    timer--;
-    //уменьшенное время запоминается
-    stats.setTimeLeft(timer);
-    //если осталось меньше 10 секунд - включается тиаканье часов
-    if (timer < 11 && timer > 0) {
-      sounds.tick.play();
-    }
-    //если время вышло
-    if (timer === 0 || timer < 0) {
-      //очищается таймер
-      clearTimers();
-      //заканчивается игра
-      gameOver();
-      //в конце игры звучит гудок
-      sounds.timeEnd.play();
-    }
-  }, 1000)
+
 }
 //функция окончания игры, принимает:
 // showPopup = true/false для показа всплывающего окна, по умолчанию true
 // setHighscore = true/false для учета очков в highscore, по умолчанию true
 function gameOver(showPopup = true, setHighscore = true) {
+  //получит информацию о последнем запущенном игровом режиме (который и нужно остановить)
+  var gameMode = ingameInfo.currentMode;
   clearTimers();
-  //удаляется листенер с клика
-  document.querySelector('.pepe-standard').removeEventListener('mousedown', clickOnPepe);
-  //удаляется активная клетка
-  document.querySelector('.pepe-standard').classList.remove('game-block__active', 'pepe-standard');
+  //окончание классического режима
+  if (gameMode == 'classic') {
+    //удаляется листенер с клика
+    document.querySelector('.pepe-standard').removeEventListener('mousedown', clickOnPepe);
+    //удаляется активная клетка
+    document.querySelector('.pepe-standard').classList.remove('game-block__active', 'pepe-standard');
+    //если в функцию явно не передан запрет на показ всплывающего окна - оно показывается
+    if (showPopup) popups.show("#popup-gameover__classic");
+  }
+  if (gameMode == 'runner') {
+    document.querySelector(".pepe-runner").removeEventListener('mouseover', pepeRun);
+    document.querySelector(".pepe-runner").removeEventListener('click', pepeCatched);
+    document.querySelector('.pepe-runner').classList.remove('pepe-runner');
+    //если в функцию явно не передан запрет на показ всплывающего окна - оно показывается
+    if (showPopup) popups.show("#popup-gameover__runner");
+  }
   //переменная, отвечающая за состояние игры
   ingameInfo.playing = false;
   //устанавливается highscore
   if (setHighscore) stats.setHighscore(stats.getScore());
   //обновляется вся статистика
-  stats.showAll();
-  //если в функцию явно не передан запрет на показ всплывающего окна - оно показывается
-  if (showPopup) popups.show("#popup-gameover");
+  stats.showAll(settings.getGameMode());
   headerButtonsSwitcher('stop');
 }
 //запуск игры
 btnPlay.addEventListener('click', play);
-
 //листенер на клик по информационным кнопкам для вызова всплывающих окон
 document.querySelector("#info-buttons").addEventListener('click', function(e) {
   switch (e.target.id) {
@@ -462,7 +576,7 @@ document.querySelector("#break").addEventListener('click', function() {
 
 //листенер для кнопки REPLAY, начинает новую игру в том случае, если игра уже идет
 document.querySelector("#replay").addEventListener('click', function() {
-  //если игра уже запущена - нажимать PLAY, выход из функции
+  //если игра не запущена - нажимать PLAY, выход из функции
   if (!ingameInfo.playing) return
   gameOver(false);
   play();
