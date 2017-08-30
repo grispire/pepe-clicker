@@ -177,7 +177,6 @@ h2 {
 }
 
 .game-field {
-  max-width: 430px;
   min-width: 265px;
   justify-content: center;
   flex-wrap: wrap;
@@ -185,16 +184,22 @@ h2 {
   align-items: center;
 }
 
-.field-small {
+.field-classic__small {
   width: 265px;
 }
 
-.field-medium {
+.field-classic__medium {
   width: 345px;
 }
 
-.field-large {
+.field-classic__large {
   width: 430px;
+}
+
+.field-runner {
+  width: 500px;
+  height: 500px;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 .game-block {

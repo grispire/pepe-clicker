@@ -6,6 +6,8 @@ var
   gameField = document.querySelector("#game-field"),
   //настройки
   settings = new Settings(),
+  //игровое поле
+  field = new Field(),
   //статистика
   stats = new Stats(),
   //поп-апы
@@ -39,16 +41,40 @@ function Settings() {
     return gameTime;
   }
   this.setGameMode = function(modeString) {
-    document.querySelector('input[name="game-mode__input"]:checked').value;
+    gameMode = document.querySelector('input[name="game-mode__input"]:checked').value;
   }
   this.getGameMode = function() {
     return gameMode;
   }
-  this.setFieldSize = function(sizeString) {
-    fieldSize = +document.querySelector('input[name="game-field__input"]:checked').value;
+  this.setFieldSize = function() {
+    fieldSize = document.querySelector('input[name="game-field__input"]:checked').value;
   }
-  this.getFieldSize = function() {
-    return +fieldSize;
+  //принимает значение variation, которое отвечает за возвращаемый тип значения
+  this.getFieldSize = function(variation = 'string') {
+    //числа возвращаются в зависимости от размера поля
+    if (variation === 'number') {
+      switch (fieldSize) {
+        case 'small':
+          return 9;
+          break;
+        case 'medium':
+          return 16;
+          break;
+        case 'large':
+          return 25;
+          break;
+        default:
+          alert('Problems with Field size');
+          return
+      }
+    }
+    // по умолчанию возвращается строка
+    return fieldSize;
+  }
+  this.setAll = function() {
+    this.setGameTime();
+    this.setGameMode()
+    this.setFieldSize();
   }
 };
 
@@ -98,6 +124,17 @@ function Stats() {
   this.showHighscore = function() {
     document.querySelector("#game-highscore h4").textContent = "Highscore: " + highscore;
   }
+  this.showAll = function() {
+    this.showTimeLeft();
+    this.showScore();
+    this.showHighscore();
+  }
+  //если передана show, то отображается статистика
+  this.default = function(show) {
+    this.setTimeLeft(settings.getGameTime());
+    this.setScore(0);
+    if (show) this.showAll();
+  }
 };
 
 //конструктор объекта поп-апов
@@ -144,22 +181,10 @@ function Popups() {
     popup.addEventListener('click', this.close.bind(this));
   }
 }
-
-function setSettings() {
-  settings.setFieldSize();
-  settings.setGameTime();
-  settings.setGameMode();
-}
-//отображение актуальной статистики
-function showStats() {
-  stats.showTimeLeft();
-  stats.showScore();
-  stats.showHighscore();
-};
-
 //ПЕРВИЧНЫЙ ВЫВОД ПОЛЯ И СТАТИСТИКИ
-drawField()
-showStats();
+field.draw();
+//Вывод статистики
+stats.showAll();
 
 //главный листенер клавиатуры
 document.addEventListener('keydown', function(e) {
@@ -184,52 +209,74 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-//функция создания поля
-function drawField() {
+function Field() {
   var
     //само игровое поле
     gameField = document.querySelector("#game-field"),
     //новая ячейка
     newCell = document.createElement('div');
-  //присвоение ей класса
-  newCell.className = 'game-block';
-  //в зависимости от размера поля ему присваевается класс
-  gameField.classList.remove('field-small', 'field-medium', 'field-large');
-  switch (settings.getFieldSize()) {
-    case 9:
-      gameField.classList.add('field-small');
-      break;
-    case 16:
-      gameField.classList.add('field-medium');
-      break;
-    case 25:
-      gameField.classList.add('field-large');
-      break;
-    default:
-      console.log('Ошибка построения поля. Количество ячеек - ' + settings.getFieldSize())
-  }
-  //полная очистка игрового поля
-  gameField.innerHTML = '';
   //отрисовка поля
-  for (var i = 0; i < settings.getFieldSize(); i++) {
-    gameField.appendChild(newCell.cloneNode());
+  this.draw = function() {
+    //режим берется из настроек
+    var mode = settings.getGameMode();
+    //полная очистка игрового поля
+    this.clear();
+    //отрисовка поля для классического режима
+    if (mode === 'classic') {
+      //присвоение ячейке поля класса
+      newCell.className = 'game-block';
+      //в зависимости от размера поля ему присваевается класс
+      switch (settings.getFieldSize('string')) {
+        case 'small':
+          gameField.classList.add('field-classic__small');
+          break;
+        case 'medium':
+          gameField.classList.add('field-classic__medium');
+          break;
+        case 'large':
+          gameField.classList.add('field-classic__large');
+          break;
+        default:
+          console.log(settings.getFieldSize('number'));
+          console.log('Ошибка построения поля. Количество ячеек - ' + settings.getFieldSize('number'))
+      }
+      //отрисовка поля
+      for (var i = 0; i < settings.getFieldSize('number'); i++) {
+        gameField.appendChild(newCell.cloneNode());
+      }
+    }
+    //отрисовка поля для runner режима
+    if (mode === 'runner') {
+      gameField.classList.add('field-runner');
+    }
   }
-};
+  //очищает поле
+  this.clear = function() {
+    //убирает всех детей
+    gameField.innerHTML = '';
+    //удаляет все классы, кроме стандартного .game-field
+    gameField.classList.forEach(function(i) {
+      if (i == 'game-field') return
+      gameField.classList.remove(i);
+    })
+  }
+}
+
 
 //функция отвечает за распределение очков
 function scorer() {
   //в зависимости от размера поля (которое влияет на сложность) начисляются очки
-  switch (settings.getFieldSize()) {
+  switch (settings.getFieldSize('string')) {
     //10 очков на маленьком поле
-    case 9:
+    case 'small':
       stats.addScore(10);
       break;
       //12 очков на среднем поле
-    case 16:
+    case 'medium':
       stats.addScore(12);
       break;
       //15 очков на большом поле
-    case 25:
+    case 'large':
       stats.addScore(15);
       break;
     default:
@@ -242,7 +289,7 @@ function scorer() {
 function showPepe() {
   var
     //размер поля
-    fieldSize = settings.getFieldSize(),
+    fieldSize = settings.getFieldSize('number'),
     //все клетки игрового поля
     cellsCollection = document.querySelectorAll('.game-block'),
     //случайное число в диапазоне количества клеток, отвечающее за положение нового Пепе
@@ -288,15 +335,13 @@ function headerButtonsSwitcher(gameStatus) {
     //зато его получают кнопки "REPLAY" & "BREAK"
     document.querySelector('#replay').classList.add('button-clickable');
     document.querySelector("#break").classList.add('button-clickable');
-  }
-  else if (gameStatus === 'stop') {
+  } else if (gameStatus === 'stop') {
     //кнопка "PLAY" получает объем
     document.querySelector('#play').classList.add('button-clickable');
     //зато его теряют кнопки "REPLAY" & "BREAK"
     document.querySelector('#replay').classList.remove('button-clickable');
     document.querySelector("#break").classList.remove('button-clickable');
-  }
-  else {
+  } else {
     console.log('Неверный параметр передан в функцию');
   }
 }
@@ -327,19 +372,15 @@ function clearTimers() {
 
 function play() {
   //если игра идет в данный момент, то прерывается выполнение функции
-  if (ingameInfo.playing) return
+  if (ingameInfo.playing) return;
   //предварительно закрываются все поп-апы
   popups.close();
   //обновляется переменная настроек из инпутов
-  setSettings();
-  //передает в статистику время на игру
-  stats.setTimeLeft(settings.getGameTime());
-  //обнуляет очки
-  stats.setScore(0);
-  //показать статистику
-  showStats();
+  settings.setAll();
+  //устанавливает стандартные значения статистики и отображает их
+  stats.default('show');
   //нарисовать игровое поле
-  drawField();
+  field.draw();
   //добавить первую активную клетку
   showPepe();
   ingameInfo.playing = true;
@@ -379,11 +420,11 @@ function gameOver(showPopup = true, setHighscore = true) {
   //переменная, отвечающая за состояние игры
   ingameInfo.playing = false;
   //устанавливается highscore
-  if(setHighscore) stats.setHighscore(stats.getScore());
+  if (setHighscore) stats.setHighscore(stats.getScore());
   //обновляется вся статистика
-  showStats();
+  stats.showAll();
   //если в функцию явно не передан запрет на показ всплывающего окна - оно показывается
-  if(showPopup) popups.show("#popup-gameover");
+  if (showPopup) popups.show("#popup-gameover");
   headerButtonsSwitcher('stop');
 }
 //запуск игры
