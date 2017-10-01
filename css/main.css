@@ -66,6 +66,11 @@ body {
   font-size: 16px;
 }
 
+header {
+  min-width: 1300px;
+  margin: 0 auto;
+}
+
 h1 {
   font-weight: 700;
   font-size: 3em;
@@ -645,6 +650,8 @@ header .button-clickable {
 
 .contacts {
   box-shadow: 4px 4px rgba(0, 0, 0, 0.7);
+  font-weight: 700;
+  background-color: rgba(145, 51, 153, 0.9);
 }
 
 .contacts:hover {

@@ -556,9 +556,6 @@ document.querySelector("#info-buttons").addEventListener('click', function(e) {
     case 'version-info':
       popups.show("#popup-version");
       break;
-    case 'contacts-info':
-      popups.show('#popup-contacts');
-      break;
     default:
       return;
   }
