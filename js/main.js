@@ -1,8 +1,7 @@
-﻿
-"use strict"
+﻿"use strict"
 //переменная настроек
 var
-  //игровое поле
+//игровое поле
   gameField = document.querySelector("#game-field"),
   //настройки
   settings = new Settings(),
@@ -16,6 +15,7 @@ var
   sounds = {
     tick: document.querySelector('#sound-tick'),
     timeEnd: document.querySelector("#sound-timeout"),
+    rage: document.querySelector("#sound-rage"),
   },
   //переменная, хранящая информацию о текущей игре
   ingameInfo = {
@@ -44,9 +44,9 @@ function Settings() {
     gameMode = document.querySelector('input[name="game-mode__input"]:checked').value;
   }
   this.getGameMode = function() {
-    return gameMode;
-  }
-  //принимает значение variation, которое отвечает за возвращаемый тип значения
+      return gameMode;
+    }
+    //принимает значение variation, которое отвечает за возвращаемый тип значения
   this.getDifficult = function(variation = 'string') {
     var difficult = document.querySelector('input[name="game-difficult__input"]:checked').value;
     //числа возвращаются в зависимости от размера поля
@@ -139,26 +139,26 @@ function Stats() {
   this.showHighscore = function() {
     document.querySelector("#game-highscore h4").textContent = "Highscore: " + highscore;
   }
-  this.setStopwatch = function (time) {
+  this.setStopwatch = function(time) {
     stopwatch = time;
   }
-  this.getStopwatch = function () {
+  this.getStopwatch = function() {
     return stopwatch;
   }
-  this.showStopwatch = function () {
+  this.showStopwatch = function() {
     document.querySelector("#game-timeLeft h4").textContent = "Time spent: " + stopwatch + 's';
     popupStopwatch.textContent = stopwatch;
   }
   this.showAll = function(mode) {
-    this.showTimeLeft();
-    this.showScore();
-    this.showHighscore();
-    //в runner показывается секундомер вместо оставшегося времени
-    if (mode == 'runner') {
-      this.showStopwatch()
+      this.showTimeLeft();
+      this.showScore();
+      this.showHighscore();
+      //в runner показывается секундомер вместо оставшегося времени
+      if (mode == 'runner') {
+        this.showStopwatch()
+      }
     }
-  }
-  //если передана show, то отображается статистика
+    //если передана show, то отображается статистика
   this.default = function(show) {
     this.setTimeLeft(settings.getGameTime());
     this.setScore(0);
@@ -170,26 +170,26 @@ function Stats() {
 function Popups() {
   //закрывает все поп-апы и их обертку
   this.close = function(e) {
-    //если в функцию передан эвент
-    if (e) {
-      //и у него есть класс popup-close, то был нажат крестик в окне поп-апа
-      if (e.target.classList.contains('popup-close')) {
-        //в таком случае закрываются все поп-апы
-        this.close();
+      //если в функцию передан эвент
+      if (e) {
+        //и у него есть класс popup-close, то был нажат крестик в окне поп-апа
+        if (e.target.classList.contains('popup-close')) {
+          //в таком случае закрываются все поп-апы
+          this.close();
+        }
+        //если эвент передан не был, то функция вызвана из кода
+      } else {
+        //все открытые всплывающие окна записываются в переменную
+        var popups = document.querySelectorAll(".popup-visible");
+        //и каждое из них
+        popups.forEach(function(item) {
+          //получает CSS свойства, прячущие слой
+          item.style.visibility = 'hidden';
+          item.classList.remove('popup-visible');
+        });
       }
-      //если эвент передан не был, то функция вызвана из кода
-    } else {
-      //все открытые всплывающие окна записываются в переменную
-      var popups = document.querySelectorAll(".popup-visible");
-      //и каждое из них
-      popups.forEach(function(item) {
-        //получает CSS свойства, прячущие слой
-        item.style.visibility = 'hidden';
-        item.classList.remove('popup-visible');
-      });
     }
-  }
-  //показывает поп-ап по выбранному селектору
+    //показывает поп-ап по выбранному селектору
   this.show = function(selector) {
     //сначала закрывает все остальные всплывающие окна
     this.close();
@@ -241,46 +241,46 @@ document.addEventListener('keydown', function(e) {
 
 function Field() {
   var
-    //само игровое поле
+  //само игровое поле
     gameField = document.querySelector("#game-field"),
     //новая ячейка
     newCell = document.createElement('div');
   //отрисовка поля
   this.draw = function() {
-    //режим берется из настроек
-    var mode = settings.getGameMode();
-    //полная очистка игрового поля
-    this.clear();
-    //отрисовка поля для классического режима
-    if (mode === 'classic') {
-      //присвоение ячейке поля класса
-      newCell.className = 'game-block';
-      //в зависимости от сложности меняется размер поля
-      switch (settings.getDifficult('string')) {
-        case 'easy':
-          gameField.classList.add('field-classic__small');
-          break;
-        case 'medium':
-          gameField.classList.add('field-classic__medium');
-          break;
-        case 'hard':
-          gameField.classList.add('field-classic__large');
-          break;
-        default:
-          console.log(settings.getDifficult('number'));
-          console.log('Ошибка построения поля. Количество ячеек - ' + settings.getDifficult('number'))
+      //режим берется из настроек
+      var mode = settings.getGameMode();
+      //полная очистка игрового поля
+      this.clear();
+      //отрисовка поля для классического режима
+      if (mode === 'classic') {
+        //присвоение ячейке поля класса
+        newCell.className = 'game-block';
+        //в зависимости от сложности меняется размер поля
+        switch (settings.getDifficult('string')) {
+          case 'easy':
+            gameField.classList.add('field-classic__small');
+            break;
+          case 'medium':
+            gameField.classList.add('field-classic__medium');
+            break;
+          case 'hard':
+            gameField.classList.add('field-classic__large');
+            break;
+          default:
+            console.log(settings.getDifficult('number'));
+            console.log('Ошибка построения поля. Количество ячеек - ' + settings.getDifficult('number'))
+        }
+        //отрисовка поля
+        for (var i = 0; i < settings.getDifficult('number'); i++) {
+          gameField.appendChild(newCell.cloneNode());
+        }
       }
-      //отрисовка поля
-      for (var i = 0; i < settings.getDifficult('number'); i++) {
-        gameField.appendChild(newCell.cloneNode());
+      //отрисовка поля для runner режима
+      if (mode === 'runner') {
+        gameField.classList.add('field-runner');
       }
     }
-    //отрисовка поля для runner режима
-    if (mode === 'runner') {
-      gameField.classList.add('field-runner');
-    }
-  }
-  //очищает поле
+    //очищает поле
   this.clear = function() {
     //убирает всех детей
     gameField.innerHTML = '';
@@ -318,7 +318,7 @@ function scorer() {
 //вывод клетки с Пепе
 function showPepe() {
   var
-    //размер поля определяется сложностью
+  //размер поля определяется сложностью
     fieldSize = settings.getDifficult('number'),
     //все клетки игрового поля
     cellsCollection = document.querySelectorAll('.game-block'),
@@ -394,19 +394,19 @@ function keydownOnPepe(key) {
 }
 
 function runnerPepeStart() {
-    //секундомер сбрасывается
+  //секундомер сбрасывается
   stats.setStopwatch(0);
   stats.showStopwatch();
   //интервал для секундомера
-  timers.stopwatch = setInterval(function () {
-    //получает текущее время
-    var currentTime = +stats.getStopwatch();
-    //обрезает хвост
-    currentTime = (currentTime+0.1).toFixed(1);
-    stats.setStopwatch(+currentTime);
-    stats.showStopwatch();
-  }, 100)
-  //кулдаун принудительно сбрасывается
+  timers.stopwatch = setInterval(function() {
+      //получает текущее время
+      var currentTime = +stats.getStopwatch();
+      //обрезает хвост
+      currentTime = (currentTime + 0.1).toFixed(1);
+      stats.setStopwatch(+currentTime);
+      stats.showStopwatch();
+    }, 100)
+    //кулдаун принудительно сбрасывается
   ingameInfo.cooldown = false;
   //игровое поле
   var
@@ -565,7 +565,7 @@ document.querySelector("#info-buttons").addEventListener('click', function(e) {
 document.querySelector("#break").addEventListener('click', function() {
   //если игра не запущена - выход из функции, т.к прерывать нечего
   if (!ingameInfo.playing) return
-  //вызов функции окончания игры без показа всплывающего окна и учета highscore
+    //вызов функции окончания игры без показа всплывающего окна и учета highscore
   gameOver(false, false);
   stats.setTimeLeft(0);
   headerButtonsSwitcher('stop');
@@ -578,3 +578,45 @@ document.querySelector("#replay").addEventListener('click', function() {
   gameOver(false);
   play();
 });
+
+// RAGE MODE
+(function() {
+  let timerId;
+  let inProgress = false;
+  const playRageBtn = document.querySelector('#play-rage')
+
+  const startRageMode = () => {
+    play();
+
+    timerId = setInterval(() => {
+      if (ingameInfo.playing) gameOver(false);
+      play();
+    }, 50);
+    inProgress = true;
+
+    playRageBtn.innerHTML = 'PLS STAAAAAAAAAAAAAHP!!!!';
+    sounds.rage.play();
+    document.body.classList.add('rage-mode-page');
+  };
+
+  const stopRageMode = () => {
+    clearInterval(timerId);
+    inProgress = false;
+    playRageBtn.innerHTML = 'play rage mode';
+    sounds.rage.pause();
+    document.body.classList.remove('rage-mode-page');
+  }
+
+
+
+  playRageBtn.addEventListener('click', (e) => {
+    if (inProgress) {
+      stopRageMode();
+      return;
+    }
+
+    startRageMode()
+  });
+
+
+}());
